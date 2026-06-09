@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Heading -->
+<div class="text-center mb-8">
+    <h2 class="text-3xl font-bold"> Find Your Ideal Property</h2>
+    <p class="text-gray-200 mt-2">AI-powered recommendations based on your preferences</p>
+</div>
+
+<!-- FORM -->
+<form action="/predict" method="POST"
+    class="max-w-3xl mx-auto bg-white/10 backdrop-blur-lg p-6 rounded-xl shadow-lg">
+
+    <!-- Grid Layout -->
+    <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- City -->
+        <div>
+            <label class="block mb-1">City</label>
+            <select name="city" required class="input">
+                <option value="">Select City</option>
+                {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- BHK -->
+        <div>
+            <label>BHK</label>
+            <input type="number" name="bhk" class="input" required>
+        </div>
+
+        <!-- Bathrooms -->
+        <div>
+            <label>Bathrooms</label>
+            <input type="number" name="bathrooms" class="input" required>
+        </div>
+
+        <!-- Balconies -->
+        <div>
+            <label>Balconies</label>
+            <input type="number" name="balconies" class="input" required>
+        </div>
+
+        <!-- Area -->
+        <div>
+            <label>Area (sqft)</label>
+            <input type="number" name="area" class="input" required>
+        </div>
+
+        <!-- Age -->
+        <div>
+            <label>Property Age</label>
+            <input type="number" name="age" class="input" required>
+        </div>
+
+        <!-- Amenities -->
+        <div>
+            <label>Amenities</label>
+            <input type="number" name="amenities" class="input" required>
+        </div>
+
+        <!-- Budget -->
+        <div>
+            <label>Budget (₹ Lakhs)</label>
+            <input type="number" name="budget" class="input" required>
+        </div>
+
+    </div>
+
+    <!-- Map Section -->
+    <div class="mt-6">
+        <label class="block mb-2"> Select Location</label>
+        <div id="map" class="h-72 rounded-lg border border-white/20"></div>
+    </div>
+
+    <!-- Hidden -->
+    <input type="hidden" name="lat" id="lat">
+    <input type="hidden" name="lon" id="lon">
+
+    <!-- Button -->
+    <button type="submit"
+        class="w-full mt-6 bg-orange-500 hover:bg-orange-600 p-3 rounded-lg text-lg transition">
+        🔍 Find Properties
+    </button>
+
+</form>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var marker;
+
+    map.on('click', function (e) {
+        var lat = e.latlng.lat;
+        var lon = e.latlng.lng;
+
+        document.getElementById("lat").value = lat;
+        document.getElementById("lon").value = lon;
+
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        marker = L.marker([lat, lon]).addTo(map);
+    });
+</script>
+
+<!-- Tailwind Input Style -->
+<style>
+.input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    color: black;
+    outline: none;
+}
+</style>
+
+{% endblock %}
